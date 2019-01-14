@@ -55,7 +55,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
     Particle particle = particles[i];
 
     double new_theta = particle.theta + yaw_rate * delta_t;
-    double velocity_to_yaw_rate = fabs(yaw_rate) < EPS ? 0 : velocity/yaw_rate; // todo: float comparison
+    double velocity_to_yaw_rate = fabs(yaw_rate) < EPS ? 0 : velocity/yaw_rate;
     double new_x = particle.x + velocity_to_yaw_rate * (sin(new_theta) - sin(particle.theta));
     double new_y = particle.y + velocity_to_yaw_rate * (cos(particle.theta) - cos(new_theta));
     
@@ -145,13 +145,7 @@ double ParticleFilter::calculateWeight(vector<LandmarkObs> mappedObservations, v
                                               return val.id == observation.id;
                                             });
 
-    double noise = std_landmark[0]*std_landmark[1];
-    double gauss_norm = 1/(2*M_PI*noise);
-    double dx = observation.x - closest_landmark->x;
-    double dy = observation.y - closest_landmark->y;
-    double exponent = dx*dx/(2*noise) + dy*dy/(2*noise);
-    double obsWeight =  gauss_norm * exp(-exponent);
-
+    double obsWeight = multiv_prob(std_landmark[0], std_landmark[1], observation.x, observation.y, closest_landmark->x, closest_landmark->y);
     if (obsWeight < EPS) {
       weight *= EPS;
     } else {
