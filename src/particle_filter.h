@@ -69,6 +69,9 @@ class ParticleFilter {
   void dataAssociation(std::vector<LandmarkObs> predicted, 
                        std::vector<LandmarkObs>& observations);
 
+  /**
+   * mapObservations Maps observations from car coordinates to map (particle) coordinates.
+   */
   vector<LandmarkObs> mapObservations(Particle particle,
                                     const vector<LandmarkObs>& observations);
   
@@ -85,8 +88,14 @@ class ParticleFilter {
                      const std::vector<LandmarkObs> &observations,
                      const Map &map_landmarks);
 
+  /**
+   * getLandmarksInRange Gets landmarks that are in sensor range of the particle.
+   */
   vector<LandmarkObs> getLandmarksInRange(Particle particle, const Map &map_landmarks, double sensor_range);
 
+  /**
+   * calculateWeight Calculates particle weight.
+   */
   double calculateWeight(vector<LandmarkObs> mappedObservations, vector<LandmarkObs> inrangeLandmarks, double std_landmark[]);
   
   /**
